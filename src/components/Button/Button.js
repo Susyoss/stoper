@@ -1,11 +1,13 @@
-import styles from './Button.module.scss'
+import styles from './Button.module.scss';
 
-const Button = props => {
-    return (
-        <div className={styles.div}>
-            <button className={styles.button}>{props.button}</button>
-        </div>
-    );
-};
+const Button = (props) => (
+  <button
+    className={styles.button}
+    onClick={props.onClick}
+    disabled={props.isInactive}
+  >
+    {props.children}
+  </button>
+);
 
 export default Button;
