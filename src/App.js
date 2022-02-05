@@ -1,59 +1,54 @@
-import Button from './components/Button/Button.js';
-import Container from './components/Container/Container.js';
-import Timer from './components/Timer/Timer.js';
+import Stopwatch from "./components/Stopwatch/Stopwatch";
+import Button from "./components/Button/Button";
+import React, {useState} from "react";
+import Container from "./components/Container/Container";
 
-import { useState, useEffect } from 'react';
+function App() {
+  
+  const [time, setTime] = useState({h: 0, m: 0, s:0, ms:.0});
+  const [interv, setInterv] = useState();
 
-const App = () => {
-  const [time, setTime] = useState(0);
-  const [timer, setTimer] = useState('null');
+  const start = () => {
+    run();
+    setInterv(setInterval(run, 10));
+  }
 
-  const [active, setActive] = useState(false);
+  let timerH = time.h, timerM = time.m, timerS= time.s, timerMs = time.ms;
 
-  const start = (e) => {
-    e.preventDefault();
-    console.log('start clicked');
-    setActive(true);
-    setTimer(
-      setInterval(() => {
-        setTime((time) => time + 1);
-      }, 1)
-    );
-  };
+  const run = () => {
+    if(timerM === 60){
+      timerH ++;
+      timerM = 0;
+    }
+    if(timerS === 60){
+      timerM ++;
+      timerS =0
+    }
+    if(timerMs === 100){
+      timerS ++;
+      timerMs = 0
+    }
+    timerMs++;
+    return setTime({h: timerH, m: timerM, s: timerS, ms: timerMs})
+  }
 
-  const stop = (e) => {
-    e.preventDefault();
-    console.log('stop clicked');
-    if (timer) clearInterval(timer);
-    setActive(false);
-  };
+  const pause = () => {
+    clearInterval(interv);
+  }
 
-  const reset = () => {
-    setTime(0);
-    setActive(false);
-    //setTimer('null');
-  };
-
-  useEffect(() => {
-    return () => {
-      if (timer) clearInterval(timer);
-    };
-  }, []);
+  const reset = () =>{
+    clearInterval(interv)
+    return setTime({h: 0, m: 0, s: 0, ms: 0})
+  }
 
   return (
     <Container>
-      <Timer value={time} />
-      <Button onClick={start} isInactive={active}>
-        start
-      </Button>
-      <Button onClick={stop} isInactive={!active}>
-        stop
-      </Button>
-      <Button onClick={reset} isInactive={active}>
-        reset
-      </Button>
+
+     <Stopwatch time={time}/>
+     <Button start={start} pause={pause}  reset={reset}/>
+
     </Container>
-  );
-};
+  )
+}
 
 export default App;
